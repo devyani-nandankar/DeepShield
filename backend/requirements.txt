@@ -6,3 +6,4 @@ numpy
 pillow
 matplotlib
 scikit-learn
+gunicorn
