@@ -7,7 +7,8 @@
   position: fixed;
   inset: 0;
   background: rgba(8, 12, 22, 0.85);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -20,10 +21,10 @@
 .forensic-report-card {
   position: relative;
   width: 100%;
-  max-width: 860px;
-  max-height: 90vh;
+  max-width: 880px;
+  max-height: 92vh;
   background: #0f172a;
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  border: 1px solid rgba(56, 189, 248, 0.35);
   border-radius: 20px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
   display: flex;
@@ -33,7 +34,7 @@
 
 /* Modal Header */
 .forensic-modal-header {
-  padding: 20px 28px;
+  padding: 18px 28px;
   background: rgba(30, 41, 59, 0.8);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
@@ -50,28 +51,49 @@
 
 .modal-title h2 {
   margin: 4px 0 0;
-  font-size: 22px;
+  font-size: 20px;
   color: #f8fafc;
 }
 
 .modal-actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
-.btn-print-report {
+.btn-save-report,
+.btn-save-report-lg {
+  padding: 8px 16px;
+  background: #0284c7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-save-report:hover,
+.btn-save-report-lg:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+.btn-print-report,
+.btn-print-report-lg {
   padding: 8px 16px;
   background: #2563eb;
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.btn-print-report:hover {
+.btn-print-report:hover,
+.btn-print-report-lg:hover {
   background: #1d4ed8;
   transform: translateY(-1px);
 }
@@ -99,7 +121,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding-bottom: 20px;
-  border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+  border-bottom: 2px solid rgba(56, 189, 248, 0.35);
   margin-bottom: 24px;
 }
 
@@ -110,45 +132,65 @@
 }
 
 .brand-logo-icon {
-  font-size: 32px;
+  font-size: 36px;
 }
 
-.report-brand h1 {
+.report-main-title {
   margin: 0;
-  font-size: 22px;
+  font-size: 24px;
+  font-weight: 900;
   color: #f8fafc;
-  letter-spacing: -0.5px;
+  letter-spacing: 0.05em;
 }
 
-.report-brand p {
+.report-sub-title {
   margin: 2px 0 0;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: 0.06em;
+}
+
+.report-tagline {
+  margin: 2px 0 0;
+  font-size: 11px;
   color: #94a3b8;
 }
 
-.report-meta {
+.report-meta-grid {
   font-size: 12px;
   color: #cbd5e1;
   text-align: right;
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+.report-meta-grid code {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
 }
 
 /* Sections */
 .report-section {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
-.report-section h3 {
-  font-size: 16px;
+.report-section .section-title {
+  font-size: 15px;
+  font-weight: 800;
   color: #38bdf8;
   border-left: 3px solid #38bdf8;
   padding-left: 10px;
-  margin: 0 0 14px;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .executive-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 14px;
 }
 
@@ -162,15 +204,15 @@
 }
 
 .summary-label {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   color: #94a3b8;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .summary-verdict {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 900;
   margin-top: 6px;
 }
 
@@ -183,7 +225,7 @@
 }
 
 .summary-metric {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   color: #f8fafc;
   margin-top: 4px;
@@ -235,13 +277,31 @@
 }
 
 .narrative-text {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.7;
   color: #cbd5e1;
   background: rgba(255, 255, 255, 0.03);
   padding: 16px;
   border-radius: 10px;
   border-left: 3px solid #60a5fa;
+  margin: 0;
+}
+
+/* Limitations */
+.limitations-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #94a3b8;
+}
+
+.limitations-list li {
+  margin-bottom: 6px;
+}
+
+.limitations-list strong {
+  color: #cbd5e1;
 }
 
 .report-doc-footer {
@@ -262,27 +322,16 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: flex-end;
-  gap: 14px;
-}
-
-.btn-print-report-lg {
-  padding: 10px 20px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
+  gap: 12px;
 }
 
 .btn-close-lg {
-  padding: 10px 20px;
+  padding: 8px 18px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   cursor: pointer;
 }
 
@@ -293,17 +342,17 @@
 
 /* =========================================================
    PRINT STYLES (@media print)
-   Hides dark themes, modal backdrops, and navigation buttons.
 ========================================================= */
 
 @media print {
-  /* Hide non-printable elements */
   .no-print,
-  .navbar,
+  .top-navbar,
+  .deepshield-sidebar,
   .hero,
   .main-container,
   footer,
-  .floating-bg-container {
+  .forensic-background-stage,
+  .moving-forensic-bg-root {
     display: none !important;
   }
 
@@ -338,15 +387,16 @@
     border-bottom: 2px solid #000000 !important;
   }
 
-  .report-brand h1 {
+  .report-main-title,
+  .report-sub-title {
     color: #000000 !important;
   }
 
-  .report-meta {
+  .report-meta-grid {
     color: #333333 !important;
   }
 
-  .report-section h3 {
+  .report-section .section-title {
     color: #000000 !important;
     border-left-color: #000000 !important;
   }
@@ -379,5 +429,13 @@
 
   .report-img-card h4 {
     color: #000000 !important;
+  }
+
+  .limitations-list {
+    color: #475569 !important;
+  }
+
+  .limitations-list strong {
+    color: #0f172a !important;
   }
 }

@@ -2,17 +2,26 @@ import React, { useState } from "react";
 import TiltCard from "./TiltCard";
 import "./SuspicionTimeline.css";
 
-const SuspicionTimeline = ({ frameProbabilities = [], threshold = 7 }) => {
+const SuspicionTimeline = ({
+  frameProbabilities = [],
+  threshold = 7,
+  faceImage = null,
+  gradcamImage = null,
+}) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   if (!frameProbabilities || frameProbabilities.length === 0) return null;
 
   const probs = frameProbabilities.map((p) => Number(p) || 0);
   const maxProb = Math.max(...probs, 0);
   const numThreshold = Number(threshold) || 7;
-  
+
   const suspiciousCount = probs.filter((p) => p >= numThreshold).length;
   const totalFrames = probs.length;
+
+  const currentSelectedProb = probs[selectedIndex] ?? probs[0];
+  const isSelectedSuspicious = currentSelectedProb >= numThreshold;
 
   return (
     <TiltCard className="card timeline-card-container">
@@ -21,8 +30,7 @@ const SuspicionTimeline = ({ frameProbabilities = [], threshold = 7 }) => {
         <div className="section-mini-badge">VIDEO FORENSICS</div>
         <h3>TEMPORAL SUSPICION TIMELINE</h3>
         <p>
-          Frame-level fake probability across the analyzed video. Frames above
-          the decision threshold are marked suspicious.
+          Frame-level fake probability across the analyzed video. Click any frame bar to inspect its face crop, Grad-CAM attention, and forensic status.
         </p>
       </div>
 
@@ -45,7 +53,7 @@ const SuspicionTimeline = ({ frameProbabilities = [], threshold = 7 }) => {
             style={{ bottom: `${Math.min(Math.max(numThreshold, 0), 100)}%` }}
           >
             <span className="threshold-label">
-              Decision Threshold: {numThreshold}%
+              Threshold: {numThreshold}%
             </span>
           </div>
 
@@ -60,13 +68,23 @@ const SuspicionTimeline = ({ frameProbabilities = [], threshold = 7 }) => {
               const percentage = Math.min(Math.max(prob, 0), 100);
               const isSuspicious = percentage >= numThreshold;
               const isHovered = hoveredIndex === index;
+              const isSelected = selectedIndex === index;
 
               return (
                 <div
                   key={index}
-                  className={`frame-card-column ${isHovered ? "hovered" : ""}`}
+                  className={`frame-card-column ${isHovered ? "hovered" : ""} ${
+                    isSelected ? "selected-frame" : ""
+                  }`}
+                  onClick={() => setSelectedIndex(index)}
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") setSelectedIndex(index);
+                  }}
+                  aria-label={`Frame ${index + 1}: ${percentage.toFixed(1)}% fake probability`}
                 >
                   {/* Frame Header */}
                   <div className="frame-card-header">
@@ -81,7 +99,7 @@ const SuspicionTimeline = ({ frameProbabilities = [], threshold = 7 }) => {
                       }`}
                       style={{
                         height: `${Math.max(percentage, 4)}%`,
-                        animationDelay: `${index * 55}ms`,
+                        animationDelay: `${index * 40}ms`,
                       }}
                     >
                       {/* Suspicious Warning Icon inside Bar if tall enough */}
@@ -146,8 +164,58 @@ const SuspicionTimeline = ({ frameProbabilities = [], threshold = 7 }) => {
         </div>
 
         <div className="summary-stat-card">
-          <span className="sum-label">Threshold</span>
+          <span className="sum-label">Decision Threshold</span>
           <strong className="sum-value thresh-val">{numThreshold}%</strong>
+        </div>
+      </div>
+
+      {/* SELECTED FRAME INSPECTOR DETAIL PANEL */}
+      <div className="timeline-selected-panel">
+        <div className="selected-panel-header">
+          <div className="panel-title-group">
+            <span className="panel-badge">SELECTED FRAME INSPECTION</span>
+            <h4>Frame F{selectedIndex + 1} Analysis</h4>
+          </div>
+          <div className="panel-metric-group">
+            <div className="metric-cell">
+              <span className="cell-label">Probability</span>
+              <strong className="cell-value">{currentSelectedProb.toFixed(1)}%</strong>
+            </div>
+            <div className="metric-cell">
+              <span className="cell-label">Status</span>
+              <span className={`status-pill ${isSelectedSuspicious ? "suspicious" : "normal"}`}>
+                {isSelectedSuspicious ? "⚠️ Suspicious" : "✓ Normal"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="selected-visuals-row">
+          <div className="selected-visual-box">
+            <span className="visual-caption">Face Crop (Frame F{selectedIndex + 1})</span>
+            {faceImage ? (
+              <img
+                src={faceImage.startsWith("data:") ? faceImage : `data:image/jpeg;base64,${faceImage}`}
+                alt={`Face Crop Frame F${selectedIndex + 1}`}
+                className="selected-crop-img"
+              />
+            ) : (
+              <div className="placeholder-visual">Face crop unavailable</div>
+            )}
+          </div>
+
+          <div className="selected-visual-box">
+            <span className="visual-caption">Grad-CAM (Frame F{selectedIndex + 1})</span>
+            {gradcamImage ? (
+              <img
+                src={gradcamImage.startsWith("data:") ? gradcamImage : `data:image/jpeg;base64,${gradcamImage}`}
+                alt={`Grad-CAM Frame F${selectedIndex + 1}`}
+                className="selected-crop-img"
+              />
+            ) : (
+              <div className="placeholder-visual">Grad-CAM unavailable</div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -160,6 +228,10 @@ const SuspicionTimeline = ({ frameProbabilities = [], threshold = 7 }) => {
         <div className="legend-item">
           <span className="legend-swatch suspicious"></span>
           <span>Above Threshold (Suspicious)</span>
+        </div>
+        <div className="legend-item">
+          <span className="legend-swatch selected-legend"></span>
+          <span>Currently Selected Frame</span>
         </div>
       </div>
     </TiltCard>

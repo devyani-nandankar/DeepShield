@@ -2,155 +2,84 @@ import React from "react";
 import TiltCard from "./TiltCard";
 import "./ResearchDashboard.css";
 
+const RESEARCH_TOPICS = [
+  {
+    id: "video-eval",
+    title: "Video-Level Evaluation",
+    icon: "🎬",
+    focus: "Multi-frame temporal aggregation & sequence consistency across video streams.",
+    status: "Active Research",
+    details: "Assessing frame sampling density vs classification latency on high-fps media.",
+  },
+  {
+    id: "threshold-calib",
+    title: "Threshold Calibration",
+    icon: "⚖️",
+    focus: "Decision boundary optimization for balancing false acceptance and false rejection.",
+    status: "Baseline Configured",
+    details: "Operational decision threshold calibrated on face-centric neural activations.",
+  },
+  {
+    id: "ablation-study",
+    title: "Ablation Study",
+    icon: "🧪",
+    focus: "Isolating YuNet face alignment, margin scaling, and input resolution (260 × 260).",
+    status: "Framework Defined",
+    details: "Comparative analysis between full-frame vs cropped facial region processing.",
+  },
+  {
+    id: "explainability-analysis",
+    title: "Explainability Analysis",
+    icon: "🔥",
+    focus: "Grad-CAM spatial localization fidelity on manipulated facial landmarks and boundaries.",
+    status: "Active Research",
+    details: "Qualitative evaluation of attention map focus on eyes, mouth, and boundary blend seams.",
+  },
+];
+
 const ResearchDashboard = () => {
   return (
     <section id="research" className="research-section">
       <div className="section-title-center">
-        <div className="section-badge">RESEARCH & EVALUATION MODE</div>
-        <h2>Benchmark Performance & Ablation Suite</h2>
-        <p>Experimental validation across standardized datasets, quality factors, and baseline comparison models.</p>
+        <div className="section-badge">🔬 ACADEMIC & RESEARCH WORKSPACE</div>
+        <h2>RESEARCH & EVALUATION</h2>
+        <p className="research-subtitle">
+          Experimental methodologies, evaluation frameworks, and planned investigation tracks for explainable deepfake forensics.
+        </p>
       </div>
 
-      {/* 3 Main Research Cards */}
-      <div className="research-grid">
-        <TiltCard className="card research-card">
-          <div className="research-card-icon">🌐</div>
-          <h3>Cross-Dataset Generalization</h3>
-          <p>Evaluation across FaceForensics++, Celeb-DF v2, and WildDeepfake callsets.</p>
-          <div className="research-metrics">
-            <div className="rmetric">
-              <span>FaceForensics++ (c20)</span>
-              <strong>94.8% AUC</strong>
+      {/* 6 Research & Evaluation Cards */}
+      <div className="research-grid-six">
+        {RESEARCH_TOPICS.map((topic) => (
+          <TiltCard key={topic.id} className="card research-card-clean">
+            <div className="research-card-top">
+              <span className="research-card-icon">{topic.icon}</span>
+              <span className={`research-status-pill ${topic.status.toLowerCase().replace(/\s+/g, "-")}`}>
+                {topic.status}
+              </span>
             </div>
-            <div className="rmetric">
-              <span>Celeb-DF v2</span>
-              <strong>88.4% AUC</strong>
-            </div>
-            <div className="rmetric">
-              <span>WildDeepfake</span>
-              <strong>83.2% AUC</strong>
-            </div>
-            <div className="rmetric pending">
-              <span>DFDC Public Test</span>
-              <span className="pending-badge">PENDING EXPERIMENT</span>
-            </div>
-          </div>
-        </TiltCard>
 
-        <TiltCard className="card research-card">
-          <div className="research-card-icon">⚡</div>
-          <h3>Compression Robustness</h3>
-          <p>Classification accuracy retention under H.264 video compression quantization.</p>
-          <div className="research-metrics">
-            <div className="rmetric">
-              <span>RAW (Uncompressed)</span>
-              <strong>97.2% Acc</strong>
-            </div>
-            <div className="rmetric">
-              <span>C20 (High Quality)</span>
-              <strong>94.1% Acc</strong>
-            </div>
-            <div className="rmetric">
-              <span>C40 (Heavy Compression)</span>
-              <strong>85.6% Acc</strong>
-            </div>
-            <div className="rmetric pending">
-              <span>AV1 Codec Evaluation</span>
-              <span className="pending-badge">PENDING EXPERIMENT</span>
-            </div>
-          </div>
-        </TiltCard>
+            <h3>{topic.title}</h3>
+            <p className="research-focus">{topic.focus}</p>
 
-        <TiltCard className="card research-card">
-          <div className="research-card-icon">🧪</div>
-          <h3>Ablation Study</h3>
-          <p>Ablation isolating YuNet face cropping vs full-frame evaluation pipeline.</p>
-          <div className="research-metrics">
-            <div className="rmetric">
-              <span>YuNet + EfficientNetB2</span>
-              <strong>Optimal (DeepShield)</strong>
+            <div className="research-card-footer">
+              <span className="rfooter-label">Status Note:</span>
+              <span className="rfooter-desc">{topic.details}</span>
             </div>
-            <div className="rmetric">
-              <span>Full Frame Baseline</span>
-              <strong>-12.4% AUC</strong>
-            </div>
-            <div className="rmetric">
-              <span>ResNet50 Baseline</span>
-              <strong>-4.8% AUC</strong>
-            </div>
-            <div className="rmetric pending">
-              <span>Vision Transformer (ViT)</span>
-              <span className="pending-badge">PENDING EXPERIMENT</span>
-            </div>
-          </div>
-        </TiltCard>
+          </TiltCard>
+        ))}
       </div>
 
-      {/* EXPERIMENT COMPARISON TABLE */}
-      <TiltCard className="card comparison-table-card">
-        <div className="comp-header">
-          <div className="section-mini-badge">BENCHMARK COMPARISON</div>
-          <h3>Model Architecture Comparison Matrix</h3>
-          <p>Empirical evaluation comparing DeepShield pipeline to standard baseline models.</p>
+      {/* RESEARCH TRANSPARENCY NOTICE */}
+      <div className="research-transparency-card">
+        <div className="transparency-icon">ℹ️</div>
+        <div>
+          <h4>Scientific Transparency & Integrity Notice</h4>
+          <p>
+            DeepShield adheres to strict scientific integrity standards. In accordance with forensic research guidelines, all benchmark claims require peer-verified validation runs. Research tracks display live framework objectives without fabricated test metrics.
+          </p>
         </div>
-
-        <div className="table-responsive">
-          <table className="comparison-matrix-table">
-            <thead>
-              <tr>
-                <th>Metric / Architecture</th>
-                <th>DeepShield (EfficientNetB2 + YuNet)</th>
-                <th>Full Frame ResNet50 Baseline</th>
-                <th>Xception Baseline</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>ROC-AUC</strong></td>
-                <td><span className="highlight-green">96.4%</span></td>
-                <td>84.0%</td>
-                <td>91.2%</td>
-              </tr>
-              <tr>
-                <td><strong>Classification Accuracy</strong></td>
-                <td><span className="highlight-green">94.8%</span></td>
-                <td>82.5%</td>
-                <td>90.1%</td>
-              </tr>
-              <tr>
-                <td><strong>Precision</strong></td>
-                <td><span className="highlight-green">95.2%</span></td>
-                <td>81.4%</td>
-                <td>89.6%</td>
-              </tr>
-              <tr>
-                <td><strong>Recall / Sensitivity</strong></td>
-                <td><span className="highlight-green">94.1%</span></td>
-                <td>83.2%</td>
-                <td>90.5%</td>
-              </tr>
-              <tr>
-                <td><strong>F1 Score</strong></td>
-                <td><span className="highlight-green">94.6%</span></td>
-                <td>82.3%</td>
-                <td>90.0%</td>
-              </tr>
-              <tr>
-                <td><strong>False Positive Rate (FPR)</strong></td>
-                <td><span className="highlight-green">4.2%</span></td>
-                <td>17.5%</td>
-                <td>9.8%</td>
-              </tr>
-              <tr>
-                <td><strong>Threshold Calibration</strong></td>
-                <td><span className="highlight-badge">7.0% Optimal</span></td>
-                <td>50.0% Standard</td>
-                <td>15.0% Calibrated</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </TiltCard>
+      </div>
     </section>
   );
 };

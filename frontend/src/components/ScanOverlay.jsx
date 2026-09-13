@@ -1,38 +1,33 @@
 import React, { useState, useEffect } from "react";
 import "./ScanOverlay.css";
 
-const STEPS = [
-  "AI ANALYSIS IN PROGRESS",
-  "Detecting Face...",
-  "Extracting Facial Features...",
-  "Analyzing Deepfake Patterns...",
-  "Generating Explainability...",
-  "Analysis Complete",
+const PROGRESS_STEPS = [
+  { id: "detect", label: "DETECTING FACE", icon: "👤", sub: "YuNet Landmark Alignment" },
+  { id: "extract", label: "EXTRACTING FEATURES", icon: "🧠", sub: "260 × 260 Normalization" },
+  { id: "analyze", label: "ANALYZING MEDIA", icon: "⚡", sub: "EfficientNetB2 Inference" },
+  { id: "evidence", label: "GENERATING EVIDENCE", icon: "🔥", sub: "Grad-CAM Heatmap Synthesis" },
 ];
 
 const ScanOverlay = ({ mode = "image" }) => {
-  const [stepIndex, setStepIndex] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setStepIndex((prev) => {
-        if (prev < STEPS.length - 1) return prev + 1;
-        return prev;
-      });
-    }, 700);
+      setActiveStep((prev) => (prev + 1) % PROGRESS_STEPS.length);
+    }, 900);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="scan-overlay-container">
+    <div className="scan-overlay-container" aria-live="polite">
       {/* Corner Bracket Reticles */}
       <div className="reticle top-left"></div>
       <div className="reticle top-right"></div>
       <div className="reticle bottom-left"></div>
       <div className="reticle bottom-right"></div>
 
-      {/* Grid Overlay */}
+      {/* Grid Pattern Overlay */}
       <div className="scan-grid-pattern"></div>
 
       {/* Laser Scanning Line */}
@@ -40,19 +35,45 @@ const ScanOverlay = ({ mode = "image" }) => {
         <div className="scan-line-glow"></div>
       </div>
 
-      {/* Floating Scanning Pulse Box */}
-      <div className="scan-focus-box">
-        <div className="focus-crosshair"></div>
+      {/* Rotating Forensic Scan Ring & Crosshair */}
+      <div className="scan-ring-wrapper">
+        <div className="scan-rotating-ring outer"></div>
+        <div className="scan-rotating-ring inner"></div>
+        <div className="scan-crosshair-center">
+          <span className="ch-icon">🔬</span>
+        </div>
       </div>
 
-      {/* Animated Text Box */}
-      <div className="scan-status-badge">
+      {/* Scan Header Badge */}
+      <div className="scan-main-header">
         <span className="scan-pulse-dot"></span>
-        <span className="scan-status-text">{STEPS[stepIndex]}</span>
+        <strong className="scan-title-text">AI FORENSIC SCAN</strong>
       </div>
 
-      <div className="scan-subtext">
-        Processing {mode === "image" ? "single image frame" : "video keyframes"} via EfficientNetB2 & YuNet
+      {/* 4-Step Animated Pipeline Sequence */}
+      <div className="scan-pipeline-sequence">
+        {PROGRESS_STEPS.map((step, idx) => {
+          const isCurrent = idx === activeStep;
+          const isDone = idx < activeStep;
+          return (
+            <div
+              key={step.id}
+              className={`scan-step-item ${isCurrent ? "current" : isDone ? "done" : "pending"}`}
+            >
+              <div className="step-bullet">
+                {isDone ? "✓" : step.icon}
+              </div>
+              <div className="step-info">
+                <span className="step-name">{step.label}</span>
+                <span className="step-desc">{step.sub}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="scan-footer-note">
+        Processing {mode === "image" ? "single image" : "video frames"} via EfficientNetB2 & YuNet
       </div>
     </div>
   );

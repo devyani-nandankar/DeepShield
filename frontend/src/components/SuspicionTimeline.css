@@ -365,6 +365,140 @@
   }
 }
 
+/* Selected Frame Highlight */
+.frame-card-column.selected-frame {
+  background: rgba(56, 189, 248, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.frame-card-column.selected-frame .frame-tag {
+  background: var(--accent-color);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+/* Selected Frame Detail Inspection Panel */
+.timeline-selected-panel {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.selected-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.panel-title-group h4 {
+  margin: 4px 0 0;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.panel-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--accent-color);
+  text-transform: uppercase;
+}
+
+.panel-metric-group {
+  display: flex;
+  gap: 16px;
+}
+
+.metric-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cell-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.cell-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.status-pill.suspicious {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-pill.normal {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.selected-visuals-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.selected-visual-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.visual-caption {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.selected-crop-img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.placeholder-visual {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.legend-swatch.selected-legend {
+  background: rgba(56, 189, 248, 0.8);
+  border: 1px solid #38bdf8;
+}
+
 /* Pulse animation for suspicious bars */
 .pulse-suspicious {
   animation: barPulse 2s ease-in-out infinite alternate;
@@ -407,6 +541,10 @@
 
   .frame-card-column {
     min-width: 44px;
+  }
+
+  .selected-visuals-row {
+    grid-template-columns: 1fr;
   }
 }
 

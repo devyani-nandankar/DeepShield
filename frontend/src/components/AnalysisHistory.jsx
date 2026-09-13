@@ -8,15 +8,14 @@ export const saveAnalysisToHistory = (item) => {
   try {
     const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
     const newItem = {
-      id: item.id || `DS-${new Date().getFullYear()}-${(Math.random()*10000).toFixed(0)}`,
+      id: item.id || `DS-${new Date().getFullYear()}-${(Math.random() * 10000).toFixed(0)}`,
       date: new Date().toLocaleString(),
-      mode: item.mode,
-      prediction: item.prediction,
-      fakeProbability: item.fake_probability,
-      temporalScore: item.temporal_suspicion_score,
-      fileName: item.fileName || "Uploaded File",
+      mode: item.mode || "image",
+      prediction: item.prediction || "UNKNOWN",
+      fakeProbability: item.fake_probability ?? item.fakeProbability ?? 0,
+      threshold: item.threshold ?? 7,
     };
-    const updated = [newItem, ...existing].slice(0, 10); // keep last 10
+    const updated = [newItem, ...existing].slice(0, 15);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
     return updated;
   } catch (e) {
@@ -25,8 +24,9 @@ export const saveAnalysisToHistory = (item) => {
   }
 };
 
-const AnalysisHistory = () => {
+const AnalysisHistory = ({ onSelectHistoryItem }) => {
   const [history, setHistory] = useState([]);
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
 
   useEffect(() => {
     try {
@@ -40,16 +40,17 @@ const AnalysisHistory = () => {
   const handleClear = () => {
     localStorage.removeItem(HISTORY_KEY);
     setHistory([]);
+    setSelectedHistoryItem(null);
   };
 
   return (
-    <section className="analysis-history-section">
+    <section id="history" className="analysis-history-section">
       <TiltCard className="card history-card">
         <div className="history-header">
           <div>
-            <div className="section-mini-badge">LOCAL SESSION MANAGEMENT</div>
-            <h3>Recent Forensic Analyses</h3>
-            <p>Metadata history stored locally in your browser. No media files are stored.</p>
+            <div className="section-mini-badge">LOCAL SESSION LOGS</div>
+            <h3>RECENT ANALYSES</h3>
+            <p>Non-sensitive analysis metadata stored locally in browser session storage.</p>
           </div>
 
           {history.length > 0 && (
@@ -61,7 +62,7 @@ const AnalysisHistory = () => {
 
         {history.length === 0 ? (
           <div className="empty-history-box">
-            <span>No previous session analyses recorded. Perform an image or video analysis above.</span>
+            <span>No previous analyses.</span>
           </div>
         ) : (
           <div className="history-table-wrapper">
@@ -69,11 +70,11 @@ const AnalysisHistory = () => {
               <thead>
                 <tr>
                   <th>Analysis ID</th>
-                  <th>Date & Time</th>
-                  <th>Type</th>
-                  <th>File Name</th>
+                  <th>Date / Time</th>
+                  <th>Media Type</th>
                   <th>Prediction</th>
-                  <th>Probability</th>
+                  <th>Fake Probability</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -84,15 +85,23 @@ const AnalysisHistory = () => {
                     </td>
                     <td>{item.date}</td>
                     <td>
-                      <span className="type-badge">{item.mode.toUpperCase()}</span>
+                      <span className="type-badge">{(item.mode || "image").toUpperCase()}</span>
                     </td>
-                    <td>{item.fileName}</td>
                     <td>
                       <strong className={item.prediction === "FAKE" ? "pred-fake" : "pred-real"}>
                         {item.prediction === "FAKE" ? "⚠️ FAKE" : "✓ REAL"}
                       </strong>
                     </td>
                     <td>{item.fakeProbability}%</td>
+                    <td>
+                      <button
+                        className="btn-view-result"
+                        onClick={() => setSelectedHistoryItem(item)}
+                        title="View result metadata"
+                      >
+                        👁️ View Result
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -100,8 +109,57 @@ const AnalysisHistory = () => {
           </div>
         )}
 
+        {/* Selected History Item Detail Modal */}
+        {selectedHistoryItem && (
+          <div className="history-detail-overlay">
+            <div className="history-detail-card">
+              <div className="history-detail-header">
+                <h4>Analysis Details: {selectedHistoryItem.id}</h4>
+                <button
+                  className="btn-close-hist-detail"
+                  onClick={() => setSelectedHistoryItem(null)}
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="history-detail-body">
+                <div className="hdetail-row">
+                  <span>Analysis ID:</span>
+                  <code>{selectedHistoryItem.id}</code>
+                </div>
+                <div className="hdetail-row">
+                  <span>Timestamp:</span>
+                  <strong>{selectedHistoryItem.date}</strong>
+                </div>
+                <div className="hdetail-row">
+                  <span>Media Type:</span>
+                  <strong>{(selectedHistoryItem.mode || "image").toUpperCase()}</strong>
+                </div>
+                <div className="hdetail-row">
+                  <span>Prediction Verdict:</span>
+                  <strong className={selectedHistoryItem.prediction === "FAKE" ? "pred-fake" : "pred-real"}>
+                    {selectedHistoryItem.prediction}
+                  </strong>
+                </div>
+                <div className="hdetail-row">
+                  <span>Fake Probability:</span>
+                  <strong>{selectedHistoryItem.fakeProbability}%</strong>
+                </div>
+              </div>
+              <div className="history-detail-footer">
+                <button
+                  className="btn-close-lg"
+                  onClick={() => setSelectedHistoryItem(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="privacy-note-footer">
-          🔒 <strong>Media Privacy Note:</strong> Uploaded media is processed strictly for inference. The browser does not permanently store original images or videos in history.
+          🔒 <strong>Privacy Assurance:</strong> Original media images and videos are never retained in browser storage.
         </div>
       </TiltCard>
     </section>

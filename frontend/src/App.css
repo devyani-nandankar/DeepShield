@@ -824,6 +824,229 @@ footer p {
   to { transform: rotate(360deg); }
 }
 
+/* =========================================================
+   10. HERO FEATURE TAGS & DETAILS
+========================================================= */
+
+.hero-feature-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--card-hover-bg);
+  border: 1px solid var(--border-color);
+  letter-spacing: 0.02em;
+}
+
+/* =========================================================
+   11. FILE DETAILS PANEL
+========================================================= */
+
+.file-details-panel {
+  margin-top: 18px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--feature-card-bg);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.file-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.file-detail-label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.file-detail-val {
+  color: var(--text-primary);
+  font-weight: 700;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   12. FORENSICS EMPTY & WRAPPER
+========================================================= */
+
+.forensics-results-section {
+  scroll-margin-top: 90px;
+}
+
+.forensics-results-empty {
+  margin-bottom: 35px;
+  scroll-margin-top: 90px;
+}
+
+.forensics-empty-card {
+  text-align: center;
+  padding: 36px 20px;
+  border: 1px dashed var(--border-color);
+  border-radius: 20px;
+  background: var(--card-bg);
+}
+
+.empty-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.forensics-empty-card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.forensics-empty-card p {
+  margin: 0 auto;
+  max-width: 520px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   13. TECHNOLOGY STACK SHOWCASE
+========================================================= */
+
+.tech-stack-section {
+  margin-bottom: 45px;
+  scroll-margin-top: 90px;
+}
+
+.tech-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.tech-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tech-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-color);
+  box-shadow: var(--glow-shadow-sm);
+}
+
+.tech-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.tech-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--active-nav-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.tech-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tech-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.tech-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--active-nav-bg);
+  color: var(--accent-color);
+  width: fit-content;
+  letter-spacing: 0.04em;
+}
+
+.tech-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =========================================================
+   14. PRIVACY NOTICE BANNER
+========================================================= */
+
+.privacy-notice-banner {
+  margin-top: 24px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.privacy-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.privacy-content strong {
+  display: block;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.privacy-content p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+
 @media (max-width: 768px) {
   .dashboard-main-content {
     margin-left: 0;
