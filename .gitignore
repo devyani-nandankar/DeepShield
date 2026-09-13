@@ -20,6 +20,6 @@ frontend/node_modules/
 venv/
 backend/venv/
 frontend/node_modules/
-*.keras
+
 __pycache__/
 *.pyc
