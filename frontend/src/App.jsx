@@ -40,11 +40,12 @@ function App() {
 
   // Check backend availability on mount and periodically
   useEffect(() => {
-    if (!API_URL) {
-  console.error("VITE_API_URL is not configured.");
-  setBackendOnline(false);
-  return;
-}
+    const checkBackend = () => {
+      if (!API_URL) {
+        console.error("VITE_API_URL is not configured.");
+        setBackendOnline(false);
+        return;
+      }
       fetch(`${API_URL}/`)
         .then((res) => {
           if (res.ok) setBackendOnline(true);
