@@ -45,6 +45,7 @@ const ComparisonSlider = ({ originalSrc, gradcamSrc, labelLeft = "ORIGINAL FACE"
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onMouseMove={handleMouseMove}
+        onTouchStart={handleTouchMove}
         onTouchMove={handleTouchMove}
       >
         {/* Underneath Layer: Grad-CAM heatmap */}

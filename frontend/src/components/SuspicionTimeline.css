@@ -548,6 +548,15 @@
   }
 }
 
+@media (max-width: 480px) {
+  .timeline-card-container {
+    padding: 16px 12px;
+  }
+  .timeline-header h3 {
+    font-size: 18px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .frame-bar-fill,
   .pulse-suspicious {

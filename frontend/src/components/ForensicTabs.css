@@ -326,3 +326,98 @@
 .uppercase-val {
   text-transform: uppercase;
 }
+
+/* =========================================================
+   MOBILE & TABLET RESPONSIVE STYLES
+========================================================= */
+
+@media (max-width: 768px) {
+  .main-forensic-card {
+    padding: 20px 14px;
+    border-radius: 16px;
+  }
+
+  .workstation-header {
+    flex-direction: column;
+    gap: 14px;
+    align-items: stretch;
+  }
+
+  .workstation-header h2 {
+    font-size: 20px;
+  }
+
+  .action-buttons-right {
+    width: 100%;
+  }
+
+  .btn-print-summary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .forensic-nav-tabs {
+    gap: 8px;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .forensic-nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .verdict-banner-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 14px;
+  }
+
+  .probability-metric-box {
+    text-align: left;
+    width: 100%;
+  }
+
+  .pmetric-value {
+    font-size: 28px;
+  }
+
+  .overview-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .ov-stat-item {
+    padding: 12px 10px;
+  }
+
+  .ov-stat-item strong {
+    font-size: 15px;
+  }
+
+  .why-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .media-viewer-subtabs {
+    gap: 6px;
+  }
+
+  .mv-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .overview-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

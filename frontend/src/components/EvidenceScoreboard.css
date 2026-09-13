@@ -170,3 +170,28 @@
 .qval.good { color: #10b981; }
 .qval.fair { color: #f59e0b; }
 .qval.poor { color: #ef4444; }
+
+/* Mobile & Tablet Responsive Styles */
+@media (max-width: 768px) {
+  .evidence-scoreboard-card {
+    padding: 18px 14px;
+  }
+
+  .scoreboard-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .evidence-badge-indicator {
+    text-align: left;
+  }
+
+  .scoreboard-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .quality-check-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -109,3 +109,33 @@
   font-size: 9px;
   color: #38bdf8;
 }
+
+/* Mobile & Tablet Responsive */
+@media (max-width: 640px) {
+  .comparison-stage {
+    height: 230px;
+  }
+
+  .comparison-title-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .comp-label {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+
+  .comp-hint {
+    width: 100%;
+    text-align: center;
+    order: 3;
+    font-size: 10px;
+  }
+
+  .divider-handle {
+    width: 28px;
+    height: 28px;
+  }
+}
