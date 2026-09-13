@@ -120,16 +120,16 @@ function App() {
     setResult(null);
 
     const formData = new FormData();
+    let endpoint;
     if (mode === "image") {
-      formData.append("image", file);
+      // For image analysis, send the file under the "file" key to the live backend URL
+      formData.append("file", file);
+      endpoint = "https://deepshield-api-bgo3.onrender.com/predict";
     } else {
+      // Keep video analysis unchanged, using environment‑based URL
       formData.append("video", file);
+      endpoint = `${API_URL}/predict_video`;
     }
-
-    const endpoint =
-      mode === "image"
-        ? `${API_URL}/predict`
-        : `${API_URL}/predict_video`;
 
     try {
       const response = await fetch(endpoint, {
