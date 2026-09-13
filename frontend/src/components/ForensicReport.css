@@ -1,0 +1,383 @@
+/* =========================================================
+   FORENSIC REPORT CSS
+   Modal backdrop, report styling, and @media print support
+========================================================= */
+
+.forensic-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 12, 22, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+.forensic-report-card {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  background: #0f172a;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Modal Header */
+.forensic-modal-header {
+  padding: 20px 28px;
+  background: rgba(30, 41, 59, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #38bdf8;
+}
+
+.modal-title h2 {
+  margin: 4px 0 0;
+  font-size: 22px;
+  color: #f8fafc;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-print-report {
+  padding: 8px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-print-report:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.btn-close-modal {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Report Body */
+.printable-report-body {
+  padding: 32px;
+  overflow-y: auto;
+  color: #e2e8f0;
+}
+
+.report-doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+  margin-bottom: 24px;
+}
+
+.report-brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.brand-logo-icon {
+  font-size: 32px;
+}
+
+.report-brand h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #f8fafc;
+  letter-spacing: -0.5px;
+}
+
+.report-brand p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.report-meta {
+  font-size: 12px;
+  color: #cbd5e1;
+  text-align: right;
+  line-height: 1.6;
+}
+
+/* Sections */
+.report-section {
+  margin-bottom: 28px;
+}
+
+.report-section h3 {
+  font-size: 16px;
+  color: #38bdf8;
+  border-left: 3px solid #38bdf8;
+  padding-left: 10px;
+  margin: 0 0 14px;
+}
+
+.executive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.summary-box {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+
+.summary-verdict {
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: 6px;
+}
+
+.summary-box.fake .summary-verdict {
+  color: #ff4d6d;
+}
+
+.summary-box.real .summary-verdict {
+  color: #10b981;
+}
+
+.summary-metric {
+  font-size: 24px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-top: 4px;
+}
+
+/* Tables */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.report-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+}
+
+.report-table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Visual Evidence Grid */
+.report-visual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.report-img-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+
+.report-img-card h4 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.report-img-card img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.narrative-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+  border-radius: 10px;
+  border-left: 3px solid #60a5fa;
+}
+
+.report-doc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 28px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Modal Bottom Footer */
+.forensic-modal-footer {
+  padding: 16px 28px;
+  background: rgba(30, 41, 59, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.btn-print-report-lg {
+  padding: 10px 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-close-lg {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* =========================================================
+   PRINT STYLES (@media print)
+   Hides dark themes, modal backdrops, and navigation buttons.
+========================================================= */
+
+@media print {
+  /* Hide non-printable elements */
+  .no-print,
+  .navbar,
+  .hero,
+  .main-container,
+  footer,
+  .floating-bg-container {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .forensic-modal-backdrop {
+    position: static !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+  }
+
+  .forensic-report-card {
+    max-width: 100% !important;
+    max-height: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .printable-report-body {
+    padding: 0 !important;
+    color: #000000 !important;
+  }
+
+  .report-doc-header {
+    border-bottom: 2px solid #000000 !important;
+  }
+
+  .report-brand h1 {
+    color: #000000 !important;
+  }
+
+  .report-meta {
+    color: #333333 !important;
+  }
+
+  .report-section h3 {
+    color: #000000 !important;
+    border-left-color: #000000 !important;
+  }
+
+  .summary-box {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .summary-metric,
+  .summary-verdict {
+    color: #000000 !important;
+  }
+
+  .report-table td {
+    color: #000000 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  .narrative-text {
+    background: #f8fafc !important;
+    color: #000000 !important;
+    border-left-color: #000000 !important;
+  }
+
+  .report-img-card {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .report-img-card h4 {
+    color: #000000 !important;
+  }
+}

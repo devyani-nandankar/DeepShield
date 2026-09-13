@@ -1,0 +1,244 @@
+/* =========================================================
+   FORENSIC TABS CSS
+========================================================= */
+
+.main-forensic-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.workstation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.workstation-header h2 {
+  margin: 6px 0;
+  font-size: 26px;
+  color: #f8fafc;
+}
+
+.analysis-id-tag {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.analysis-id-tag code {
+  color: #38bdf8;
+  font-family: monospace;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.btn-print-summary {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 10px;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-print-summary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+}
+
+/* Nav Tabs Bar */
+.forensic-nav-tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  background: rgba(56, 189, 248, 0.1);
+  color: #f8fafc;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  border-color: #38bdf8;
+  color: white;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+}
+
+.animate-tab-fade {
+  animation: tabFadeIn 0.3s ease-out;
+}
+
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Overview Tab */
+.verdict-banner-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.verdict-title-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+
+.verdict-display {
+  display: block;
+  font-size: 26px;
+  font-weight: 900;
+  margin-top: 4px;
+}
+
+.verdict-display.fake { color: #ff4d6d; }
+.verdict-display.real { color: #10b981; }
+
+.probability-metric-box {
+  text-align: right;
+}
+
+.pmetric-label {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.pmetric-value {
+  display: block;
+  font-size: 32px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.pmetric-sub {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.overview-prob-bar-box {
+  margin-bottom: 24px;
+}
+
+/* Overview Stats Grid */
+.overview-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.ov-stat-item {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.ov-stat-item span {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.ov-stat-item strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 18px;
+  color: #f8fafc;
+}
+
+.ov-stat-item strong.good { color: #10b981; }
+.ov-stat-item strong.fake { color: #ff4d6d; }
+
+/* Why Panel */
+.why-panel-container {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 24px;
+}
+
+.why-panel-container h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  color: #38bdf8;
+  letter-spacing: 0.05em;
+}
+
+.why-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.why-evidence-card {
+  padding: 20px;
+  background: rgba(56, 189, 248, 0.04);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 14px;
+}
+
+.we-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.why-evidence-card h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #f8fafc;
+  letter-spacing: 0.05em;
+}
+
+.why-evidence-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.no-gradcam-notice {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+}
+
+.single-face-preview {
+  max-height: 240px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}

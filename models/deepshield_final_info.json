@@ -1,0 +1,17 @@
+{
+    "model": "DeepShield V4",
+    "backbone": "EfficientNetB2",
+    "input_size": "260x260",
+    "face_detection": "YuNet",
+    "threshold": 0.07,
+    "validation_auc": 0.8236,
+    "test_accuracy": 0.7977,
+    "test_precision": 0.8211,
+    "test_recall": 0.9248,
+    "test_f1": 0.8699,
+    "test_roc_auc": 0.8334,
+    "class_mapping": {
+        "0": "Real",
+        "1": "Fake"
+    }
+}

@@ -1,0 +1,206 @@
+/* =========================================================
+   TEMPORAL INVESTIGATION CSS
+========================================================= */
+
+.temporal-investigation-card {
+  margin-top: 24px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.investigation-header h3 {
+  margin: 6px 0;
+  font-size: 22px;
+  color: #f8fafc;
+}
+
+.investigation-header p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* Activity Map Strip */
+.temporal-activity-map-container {
+  margin-top: 24px;
+  padding: 16px;
+  background: rgba(10, 15, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+}
+
+.activity-map-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.map-legend-scale {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.gradient-scale-bar {
+  width: 80px;
+  height: 6px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #38bdf8, #ef4444);
+}
+
+.heatmap-blocks-strip {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.heatmap-block {
+  flex: 1;
+  min-width: 32px;
+  height: 48px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.heatmap-block:hover {
+  transform: translateY(-2px);
+  border-color: #38bdf8;
+}
+
+.heatmap-block.active {
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+}
+
+.block-frame-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+/* Inspector Panel */
+.selected-frame-inspector {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+.inspector-meta-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+}
+
+.meta-frame-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.meta-prob-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.prob-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.prob-label {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.meta-right {
+  text-align: right;
+}
+
+.status-badge-lg {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.status-badge-lg.suspicious {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-badge-lg.normal {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.thresh-ref {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.inspector-visuals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.inspector-img-box {
+  background: rgba(10, 15, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+
+.inspector-img-box span {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+.inspector-img-box img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.img-placeholder {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 13px;
+}

@@ -1,0 +1,89 @@
+/* =========================================================
+   FLOATING BACKGROUND CSS
+   Ambient radial glows, cyber grid pattern, floating particles
+========================================================= */
+
+.floating-bg-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  background: #0b0f19;
+}
+
+/* Cyber Grid */
+.bg-cyber-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Radial Glows */
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+}
+
+.top-left-glow {
+  top: -100px;
+  left: -100px;
+  width: 500px;
+  height: 500px;
+  background: #2563eb;
+}
+
+.bottom-right-glow {
+  bottom: -150px;
+  right: -150px;
+  width: 600px;
+  height: 600px;
+  background: #0284c7;
+}
+
+.center-glow {
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  background: #1e3a8a;
+  opacity: 0.1;
+}
+
+/* Floating Particles */
+.bg-particles .bp {
+  position: absolute;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+  opacity: 0.3;
+  animation: bgParticleFloat 12s ease-in-out infinite alternate;
+}
+
+.bp1 { width: 4px; height: 4px; top: 15%; left: 20%; animation-delay: 0s; }
+.bp2 { width: 3px; height: 3px; top: 35%; left: 80%; animation-delay: 2s; }
+.bp3 { width: 5px; height: 5px; top: 65%; left: 15%; animation-delay: 4s; }
+.bp4 { width: 4px; height: 4px; top: 85%; left: 70%; animation-delay: 6s; }
+.bp5 { width: 3px; height: 3px; top: 50%; left: 45%; animation-delay: 1s; }
+.bp6 { width: 5px; height: 5px; top: 25%; left: 60%; animation-delay: 3s; }
+.bp7 { width: 4px; height: 4px; top: 75%; left: 35%; animation-delay: 5s; }
+.bp8 { width: 3px; height: 3px; top: 10%; left: 40%; animation-delay: 7s; }
+
+@keyframes bgParticleFloat {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-25px) translateX(15px); }
+  100% { transform: translateY(-50px) translateX(-15px); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bg-particles .bp {
+    animation: none !important;
+  }
+}

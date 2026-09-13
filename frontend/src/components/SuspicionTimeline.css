@@ -1,0 +1,418 @@
+/* =========================================================
+   TEMPORAL SUSPICION TIMELINE CSS
+   Visual horizontal bar chart, Y-axis, threshold line, tooltips
+========================================================= */
+
+.timeline-card-container {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.timeline-header {
+  margin-bottom: 24px;
+}
+
+.timeline-header h3 {
+  margin: 8px 0 6px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: -0.5px;
+}
+
+.timeline-header p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* Main Chart Stage */
+.timeline-chart-stage {
+  display: flex;
+  height: 280px;
+  background: rgba(10, 15, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px 16px 12px 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Y-Axis Labels */
+.timeline-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 200px;
+  margin-top: 28px; /* align with frame-bar-track */
+  padding-right: 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Viewport with horizontal scrolling */
+.timeline-chart-viewport {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+/* Custom Scrollbar */
+.timeline-chart-viewport::-webkit-scrollbar {
+  height: 6px;
+}
+
+.timeline-chart-viewport::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.timeline-chart-viewport::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.3);
+  border-radius: 10px;
+}
+
+.timeline-chart-viewport::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+
+/* Horizontal Grid Lines */
+.timeline-grid-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+}
+
+/* Threshold Line */
+.timeline-threshold-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+  z-index: 5;
+  pointer-events: none;
+  transition: bottom 0.5s ease;
+}
+
+.threshold-label {
+  position: absolute;
+  right: 10px;
+  bottom: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #f59e0b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Track holding all frame columns */
+.timeline-bars-track {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 100%;
+  padding-bottom: 4px;
+}
+
+/* Frame Card Column */
+.frame-card-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 52px;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+  padding: 4px 2px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.frame-card-column:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.frame-card-header {
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.frame-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+/* Bar Track and Fill */
+.frame-bar-track {
+  position: relative;
+  width: 26px;
+  height: 200px; /* fixed chart area height */
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.frame-bar-fill {
+  width: 100%;
+  border-radius: 6px 6px 2px 2px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 4px;
+  animation: barGrowUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: height;
+}
+
+.frame-bar-fill.normal {
+  background: linear-gradient(180deg, #38bdf8, #2563eb);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.frame-bar-fill.suspicious {
+  background: linear-gradient(180deg, #ff4d6d, #ef4444);
+  box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+}
+
+.bar-suspicious-icon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.frame-card-footer {
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.frame-prob-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.frame-prob-text.text-suspicious {
+  color: #ff4d6d;
+}
+
+/* Hover Tooltip Card */
+.timeline-hover-tooltip {
+  position: absolute;
+  bottom: calc(100% - 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 170px;
+  background: #0f172a;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+  z-index: 30;
+  pointer-events: none;
+  animation: tooltipFadeIn 0.15s ease-out;
+}
+
+.tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 4px;
+  color: #cbd5e1;
+}
+
+.tooltip-row.header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  color: #f8fafc;
+}
+
+.tooltip-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.tooltip-status-badge.suspicious {
+  background: rgba(255, 77, 109, 0.2);
+  color: #ff4d6d;
+}
+
+.tooltip-status-badge.normal {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+/* Summary Cards Below Timeline */
+.timeline-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.summary-stat-card {
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.sum-label {
+  display: block;
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.sum-value {
+  display: block;
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.high-val {
+  color: #38bdf8;
+}
+
+.susp-val {
+  color: #ff4d6d;
+}
+
+.thresh-val {
+  color: #f59e0b;
+}
+
+/* Legend Row */
+.timeline-legend-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #94a3b8;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legend-swatch.normal {
+  background: linear-gradient(180deg, #38bdf8, #2563eb);
+}
+
+.legend-swatch.suspicious {
+  background: linear-gradient(180deg, #ff4d6d, #ef4444);
+}
+
+/* Animations */
+@keyframes barGrowUp {
+  from {
+    height: 0% !important;
+  }
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Pulse animation for suspicious bars */
+.pulse-suspicious {
+  animation: barPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes barPulse {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 77, 109, 0.9);
+  }
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+  .timeline-card-container {
+    padding: 20px;
+  }
+
+  .timeline-summary-cards {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .timeline-chart-stage {
+    height: 250px;
+    padding-left: 5px;
+  }
+
+  .timeline-y-axis {
+    height: 170px;
+    font-size: 10px;
+  }
+
+  .frame-bar-track {
+    height: 170px;
+    width: 22px;
+  }
+
+  .frame-card-column {
+    min-width: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame-bar-fill,
+  .pulse-suspicious {
+    animation: none !important;
+  }
+}

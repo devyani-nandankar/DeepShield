@@ -1,0 +1,81 @@
+/* =========================================================
+   RESEARCH DASHBOARD CSS
+========================================================= */
+
+.comparison-table-card {
+  margin-top: 30px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.comp-header h3 {
+  margin: 6px 0;
+  font-size: 22px;
+  color: #f8fafc;
+}
+
+.comp-header p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.comparison-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.comparison-matrix-table th {
+  text-align: left;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comparison-matrix-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+}
+
+.comparison-matrix-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.highlight-green {
+  color: #10b981;
+  font-weight: 800;
+}
+
+.highlight-badge {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.pending-badge {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.rmetric.pending {
+  opacity: 0.75;
+}

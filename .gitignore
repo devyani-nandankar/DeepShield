@@ -1,0 +1,25 @@
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+.env
+.env.*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/backend/venv/
+venv/
+backend/venv/
+frontend/node_modules/
+venv/
+backend/venv/
+frontend/node_modules/
+*.keras
+__pycache__/
+*.pyc
