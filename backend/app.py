@@ -47,7 +47,7 @@ YUNET_PATH = os.path.join(
 
 INPUT_SIZE = (260, 260)
 
-FINAL_THRESHOLD = 0.5  # increased threshold to reduce false positives
+FINAL_THRESHOLD = 0.07  # increased threshold to reduce false positives
 
 YUNET_CONFIDENCE = 0.55
 
