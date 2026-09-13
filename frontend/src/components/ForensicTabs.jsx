@@ -16,7 +16,10 @@ const ForensicTabs = ({ result, mode, fileName, onOpenReport }) => {
 
   const isFake = result.prediction === "FAKE";
   const fakeProb = Number(result.fake_probability) || 0;
-  const threshold = Number(result.threshold) || 7;
+  const rawThreshold = Number(result.threshold);
+  const threshold = !isNaN(rawThreshold)
+    ? (rawThreshold <= 1 ? Number((rawThreshold * 100).toFixed(2)) : rawThreshold)
+    : 7;
   const frameProbs = (result.frame_probabilities || []).map(Number);
   const suspiciousCount = result.suspicious_frame_count ?? frameProbs.filter((p) => p >= threshold).length;
 

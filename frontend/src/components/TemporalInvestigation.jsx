@@ -8,7 +8,10 @@ const TemporalInvestigation = ({ frameProbabilities = [], threshold = 7, faceIma
   if (!frameProbabilities || frameProbabilities.length === 0) return null;
 
   const probs = frameProbabilities.map(p => Number(p) || 0);
-  const numThreshold = Number(threshold) || 7;
+  const rawThreshold = Number(threshold);
+  const numThreshold = !isNaN(rawThreshold)
+    ? (rawThreshold <= 1 ? Number((rawThreshold * 100).toFixed(2)) : rawThreshold)
+    : 7;
   const currentProb = probs[selectedFrameIndex] || 0;
   const isSelectedSuspicious = currentProb >= numThreshold;
 

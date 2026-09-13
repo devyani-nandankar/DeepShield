@@ -14,7 +14,10 @@ const ForensicReport = ({ result, mode, fileName, onClose }) => {
 
   const isFake = result.prediction === "FAKE";
   const fakeProb = Number(result.fake_probability) || 0;
-  const threshold = Number(result.threshold ?? 7);
+  const rawThreshold = Number(result.threshold);
+  const threshold = !isNaN(rawThreshold)
+    ? (rawThreshold <= 1 ? Number((rawThreshold * 100).toFixed(2)) : rawThreshold)
+    : 7;
   const frameProbs = (result.frame_probabilities || []).map(Number);
   
   const meanProb = result.mean_frame_probability ?? (

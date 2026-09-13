@@ -13,7 +13,9 @@ export const saveAnalysisToHistory = (item) => {
       mode: item.mode || "image",
       prediction: item.prediction || "UNKNOWN",
       fakeProbability: item.fake_probability ?? item.fakeProbability ?? 0,
-      threshold: item.threshold ?? 7,
+      threshold: item.threshold !== undefined
+        ? (Number(item.threshold) <= 1 ? Number((Number(item.threshold) * 100).toFixed(2)) : Number(item.threshold))
+        : 7,
     };
     const updated = [newItem, ...existing].slice(0, 15);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));

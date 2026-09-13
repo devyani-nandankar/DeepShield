@@ -3,6 +3,11 @@ import TiltCard from "./TiltCard";
 import "./ModelInspector.css";
 
 const ModelInspector = ({ threshold = 7 }) => {
+  const rawThreshold = Number(threshold);
+  const displayThreshold = !isNaN(rawThreshold)
+    ? (rawThreshold <= 1 ? Number((rawThreshold * 100).toFixed(2)) : rawThreshold)
+    : 7;
+
   return (
     <section id="model" className="model-inspector-section">
       <div className="section-title-center">
@@ -91,7 +96,7 @@ const ModelInspector = ({ threshold = 7 }) => {
             </div>
             <div className="spec-row">
               <span>Decision Threshold</span>
-              <strong>{threshold}%</strong>
+              <strong>{displayThreshold}%</strong>
             </div>
           </div>
         </TiltCard>

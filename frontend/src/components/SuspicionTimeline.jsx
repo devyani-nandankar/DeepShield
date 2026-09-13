@@ -15,7 +15,10 @@ const SuspicionTimeline = ({
 
   const probs = frameProbabilities.map((p) => Number(p) || 0);
   const maxProb = Math.max(...probs, 0);
-  const numThreshold = Number(threshold) || 7;
+  const rawThreshold = Number(threshold);
+  const numThreshold = !isNaN(rawThreshold)
+    ? (rawThreshold <= 1 ? Number((rawThreshold * 100).toFixed(2)) : rawThreshold)
+    : 7;
 
   const suspiciousCount = probs.filter((p) => p >= numThreshold).length;
   const totalFrames = probs.length;
