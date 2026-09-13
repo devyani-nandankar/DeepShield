@@ -1,11 +1,20 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+import gc
 import tensorflow as tf
-import cv2
-import numpy as np
-import os
-import base64
+
+# -------------------------------------------------
+# TENSORFLOW CONFIGURATION (CPU‑ONLY)
+# -------------------------------------------------
+# Disable GPU visibility to avoid unnecessary GPU memory allocation on Render
+# (Render free tier does not provide GPU resources).
+try:
+    tf.config.set_visible_devices([], 'GPU')
+except Exception as e:
+    # If no GPU is present this will raise; we can safely ignore.
+    pass
+
 
 from gradcam import generate_gradcam, get_explanation
 
@@ -458,55 +467,36 @@ def predict():
         # FINAL RESPONSE
         # -------------------------------------------------
 
-        return jsonify({
-
+        # Build response dictionary
+        response = {
             "success": True,
-
             "prediction": prediction,
-
-            "fake_probability": round(
-                fake_probability * 100,
-                2
-            ),
-
+            "fake_probability": round(fake_probability * 100, 2),
             "threshold": FINAL_THRESHOLD,
-
             "face_detected": True,
-
             "face_box": {
-
                 "x": x,
-
                 "y": y,
-
                 "width": fw,
-
                 "height": fh
-
             },
-
-            "strongest_region":
-                explanation[
-                    "strongest_region"
-                ],
-
-            "strong_activation_percentage":
-                explanation[
-                    "strong_activation_percentage"
-                ],
-
-            "explanation":
-                explanation[
-                    "explanation"
-                ],
-
-            "face_image":
-                face_base64,
-
-            "gradcam_image":
-                heatmap_base64
-
-        })
+            "strongest_region": explanation["strongest_region"],
+            "strong_activation_percentage": explanation["strong_activation_percentage"],
+            "explanation": explanation["explanation"],
+            "face_image": face_base64,
+            "gradcam_image": heatmap_base64
+        }
+        # -------------------------------------------------
+        # MEMORY CLEANUP
+        # -------------------------------------------------
+        # Delete large temporary variables to free memory before returning
+        try:
+            del image, image_bytes, image_array, face_crop_bgr, face_crop_rgb, model_input, overlay, heatmap, explanation
+        except NameError:
+            pass
+        import gc
+        gc.collect()
+        return jsonify(response)
 
 
     except Exception as e:
