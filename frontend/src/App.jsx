@@ -11,6 +11,7 @@ import AnalysisHistory, { saveAnalysisToHistory } from "./components/AnalysisHis
 import ForensicReport from "./components/ForensicReport";
 import MovingForensicBackground from "./components/MovingForensicBackground";
 import "./App.css";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -37,7 +38,7 @@ function App() {
   // Check backend availability on mount and periodically
   useEffect(() => {
     const checkBackend = () => {
-      fetch("http://127.0.0.1:5000/")
+      fetch(`${API_URL}/`)
         .then((res) => {
           if (res.ok) setBackendOnline(true);
           else setBackendOnline(false);
@@ -120,8 +121,8 @@ function App() {
 
     const endpoint =
       mode === "image"
-        ? "http://127.0.0.1:5000/predict"
-        : "http://127.0.0.1:5000/predict_video";
+        ? `${API_URL}/predict`
+        : `${API_URL}/predict_video`;
 
     try {
       const response = await fetch(endpoint, {
@@ -159,7 +160,7 @@ function App() {
     } catch (err) {
       if (err.name === "TypeError" && err.message.includes("fetch")) {
         setBackendOnline(false);
-        setError("DeepShield AI service is currently unavailable. Please make sure the Flask backend is running (python backend/app.py).");
+        setError("DeepShield AI service is temporarily unavailable. Please try again in a moment.");
       } else {
         setError(err.message || "An unexpected error occurred during media analysis.");
       }
@@ -214,8 +215,8 @@ function App() {
                 className="nav-status"
                 title={
                   backendOnline
-                    ? "DeepShield Flask backend is active (http://127.0.0.1:5000)"
-                    : "DeepShield Flask backend offline. Start with python backend/app.py"
+                ? "DeepShield AI service is online"
+                : "DeepShield AI service is offline"
                 }
               >
                 <span className={`status-dot ${backendOnline ? "online" : "offline"}`}></span>
@@ -449,11 +450,7 @@ function App() {
                     <div className="error-content" style={{ fontSize: "13px", lineHeight: "1.5" }}>
                       <strong style={{ display: "block", marginBottom: "3px" }}>Analysis Notification</strong>
                       <div>{error}</div>
-                      {!backendOnline && (
-                        <small style={{ display: "block", marginTop: "6px", color: "var(--text-secondary)" }}>
-                          Flask server can be started in terminal: <code>python backend/app.py</code>
-                        </small>
-                      )}
+                      
                     </div>
                   </div>
                 )}
