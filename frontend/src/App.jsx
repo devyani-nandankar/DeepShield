@@ -12,6 +12,9 @@ import ForensicReport from "./components/ForensicReport";
 import MovingForensicBackground from "./components/MovingForensicBackground";
 import "./App.css";
 const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+  console.error("VITE_API_URL is not configured.");
+}
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -37,7 +40,11 @@ function App() {
 
   // Check backend availability on mount and periodically
   useEffect(() => {
-    const checkBackend = () => {
+    if (!API_URL) {
+  console.error("VITE_API_URL is not configured.");
+  setBackendOnline(false);
+  return;
+}
       fetch(`${API_URL}/`)
         .then((res) => {
           if (res.ok) setBackendOnline(true);
