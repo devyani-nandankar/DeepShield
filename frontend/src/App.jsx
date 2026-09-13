@@ -122,8 +122,8 @@ function App() {
     const formData = new FormData();
     let endpoint;
     if (mode === "image") {
-      // For image analysis, send the file under the "file" key to the live backend URL
-      formData.append("file", file);
+      // For image analysis, send the file under the "image" key as expected by Flask backend
+      formData.append("image", file);
       endpoint = "https://deepshield-api-bgo3.onrender.com/predict";
     } else {
       // Keep video analysis unchanged, using environment‑based URL
@@ -137,10 +137,21 @@ function App() {
         body: formData,
       });
 
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log("DeepShield API status:", response.status);
+      console.log("DeepShield API response text:", responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log("DeepShield prediction:", data);
+      } catch (parseErr) {
+        console.error("Failed to parse JSON response", parseErr);
+        data = {};
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || "Analysis failed on backend.");
+        throw new Error(data.error || `API returned ${response.status}: ${responseText}`);
       }
 
       setBackendOnline(true);
