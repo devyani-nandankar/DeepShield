@@ -125,7 +125,7 @@ function App() {
     if (mode === "image") {
       // For image analysis, send the file under the "image" key as expected by Flask backend
       formData.append("image", file);
-      endpoint = "https://deepshield-api-bgo3.onrender.com/predict";
+      endpoint = `${API_URL}/predict`;
     } else {
       // Keep video analysis unchanged, using environment‑based URL
       formData.append("video", file);
@@ -161,6 +161,27 @@ function App() {
       const enrichedResult = { ...data, analysisId };
 
       setResult(enrichedResult);
+
+      // After setting basic result, fetch Grad‑CAM data separately (only for image mode)
+      if (mode === "image") {
+        try {
+          const gradcamForm = new FormData();
+          gradcamForm.append("image", file);
+          const gradcamResp = await fetch(`${API_URL}/predict_gradcam`, {
+            method: "POST",
+            body: gradcamForm,
+          });
+          if (gradcamResp.ok) {
+            const gradcamData = await gradcamResp.json();
+            // Merge Grad‑CAM fields into the existing result object
+            setResult((prev) => ({ ...prev, ...gradcamData }));
+          } else {
+            console.warn("Grad‑CAM request failed:", gradcamResp.status);
+          }
+        } catch (gcErr) {
+          console.error("Error fetching Grad‑CAM:", gcErr);
+        }
+      }
 
       // Save metadata to local browser history
       saveAnalysisToHistory({

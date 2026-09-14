@@ -86,6 +86,17 @@ model = tf.keras.models.load_model(
 
 print("DeepShield model loaded successfully.")
 
+# Load TensorFlow Lite model for low‑memory inference
+TFLITE_PATH = os.path.join(BASE_DIR, "models", "deepshield_final.tflite")
+print(f"Loading TFLite model from {TFLITE_PATH}")
+_tflite_interpreter = tf.lite.Interpreter(model_path=TFLITE_PATH)
+_tflite_interpreter.allocate_tensors()
+_tflite_input_details = _tflite_interpreter.get_input_details()
+_tflite_output_details = _tflite_interpreter.get_output_details()
+_tflite_input_index = _tflite_input_details[0]["index"]
+_tflite_output_index = _tflite_output_details[0]["index"]
+print("TFLite model loaded successfully.")
+
 
 # =========================================================
 # LOAD YUNET
@@ -410,14 +421,10 @@ def predict():
         # PREDICTION
         # -------------------------------------------------
 
-        fake_probability = float(
-
-            model.predict(
-                model_input,
-                verbose=0
-            )[0][0]
-
-        )
+        # TensorFlow Lite inference
+        _tflite_interpreter.set_tensor(_tflite_input_index, model_input)
+        _tflite_interpreter.invoke()
+        fake_probability = float(_tflite_interpreter.get_tensor(_tflite_output_index)[0][0])
 
 
         # -------------------------------------------------
