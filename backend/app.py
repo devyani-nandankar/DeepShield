@@ -472,7 +472,7 @@ def predict():
             del image, image_bytes, image_array, face_crop_bgr, face_crop_rgb, model_input, overlay, heatmap, explanation
         except NameError:
             pass
-        import gc
+
         gc.collect()
         return jsonify(response)
 
@@ -588,7 +588,7 @@ def predict():
                 del image, image_bytes, image_array, face_crop_bgr, face_crop_rgb, model_input, overlay, heatmap, explanation
             except NameError:
                 pass
-            import gc
+
             gc.collect()
             return jsonify(response)
         except Exception as e:
