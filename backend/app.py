@@ -3,6 +3,7 @@ from flask_cors import CORS
 
 import os
 import gc
+import base64
 os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
 os.environ["TF_NUM_INTEROP_THREADS"] = "1"
 os.environ["OMP_NUM_THREADS"] = "1"
@@ -22,7 +23,20 @@ except Exception as e:
     pass
 
 
-from gradcam import generate_gradcam, get_explanation
+# ------------------------------------------------------------------
+# Grad‑CAM utilities are optional; import them lazily.
+# They are needed only for the `/predict_gradcam` endpoint.
+try:
+    from gradcam import generate_gradcam, get_explanation
+except ModuleNotFoundError:
+    def _missing_gradcam(*_args, **_kwargs):
+        raise ModuleNotFoundError(
+            "Optional dependency `gradcam` is not installed. "
+            "The `/predict_gradcam` endpoint cannot be used."
+        )
+    generate_gradcam = _missing_gradcam
+    get_explanation = _missing_gradcam
+# ------------------------------------------------------------------
 
 
 # =========================================================
@@ -253,6 +267,14 @@ def predict():
             cv2.IMREAD_COLOR
         )
 
+        if image is None:
+            image_bytes = None
+            image_array = None
+            gc.collect()
+            return jsonify({
+                "error": "Invalid image"
+            }), 400
+
         # OPTIONAL: Downscale very large images to keep memory low (max dimension 1024px)
         MAX_DIM = 1024
         h_tmp, w_tmp = image.shape[:2]
@@ -268,13 +290,6 @@ def predict():
         image_bytes = None
         image_array = None
         gc.collect()
-
-
-
-        if image is None:
-            return jsonify({
-                "error": "Invalid image"
-            }), 400
 
 
         # -------------------------------------------------
@@ -412,6 +427,11 @@ def predict():
             model_input,
             axis=0
         )
+        # Generate base64 face crop before releasing intermediate array
+        face_base64 = image_to_base64(
+            face_crop_bgr
+        )
+
         # Release large intermediate arrays before TensorFlow inference
         del image
         del face_crop_bgr
@@ -449,10 +469,7 @@ def predict():
         # -------------------------------------------------
         # CONVERT IMAGES TO BASE64
         # -------------------------------------------------
-
-        face_base64 = image_to_base64(
-            face_crop_bgr
-        )
+        # (face_base64 was generated prior to releasing face_crop_bgr)
 
 
         # -------------------------------------------------
