@@ -4,6 +4,7 @@ from flask_cors import CORS
 import os
 import gc
 import tensorflow as tf
+import cv2
 
 # -------------------------------------------------
 # TENSORFLOW CONFIGURATION (CPU‑ONLY)
