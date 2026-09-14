@@ -401,7 +401,10 @@ def predict():
             model_input,
             axis=0
         )
-
+        # Release large intermediate arrays before TensorFlow inference
+        del image
+        del face_crop_bgr
+        gc.collect()
 
         # -------------------------------------------------
         # PREDICTION
