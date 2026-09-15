@@ -88,28 +88,93 @@ FACE_MARGIN = 0.20
 
 
 # =========================================================
-# LOAD MODEL
+# MEMORY-SAFE MODEL LOADING
 # =========================================================
+# Render Free has a small RAM limit.
+# Do NOT load Keras and TFLite at startup at the same time.
+# Keras is loaded only for video / Grad-CAM requests.
+# TFLite is loaded only for image prediction.
 
-print("Loading DeepShield model...")
+model = None
 
-model = tf.keras.models.load_model(
-    MODEL_PATH,
-    compile=False
+TFLITE_PATH = os.path.join(
+    BASE_DIR,
+    "models",
+    "deepshield_final.tflite"
 )
 
-print("DeepShield model loaded successfully.")
+_tflite_interpreter = None
+_tflite_input_index = None
+_tflite_output_index = None
 
-# Load TensorFlow Lite model for low‑memory inference
-TFLITE_PATH = os.path.join(BASE_DIR, "models", "deepshield_final.tflite")
-print(f"Loading TFLite model from {TFLITE_PATH}")
-_tflite_interpreter = tf.lite.Interpreter(model_path=TFLITE_PATH)
-_tflite_interpreter.allocate_tensors()
-_tflite_input_details = _tflite_interpreter.get_input_details()
-_tflite_output_details = _tflite_interpreter.get_output_details()
-_tflite_input_index = _tflite_input_details[0]["index"]
-_tflite_output_index = _tflite_output_details[0]["index"]
-print("TFLite model loaded successfully.")
+
+def get_keras_model():
+    global model
+
+    if model is None:
+        print("Loading DeepShield Keras model...")
+        model = tf.keras.models.load_model(
+            MODEL_PATH,
+            compile=False
+        )
+        print("DeepShield Keras model loaded successfully.")
+
+    return model
+
+
+def release_keras_model():
+    global model
+
+    if model is not None:
+        print("Releasing Keras model from memory...")
+        model = None
+        gc.collect()
+
+        try:
+            tf.keras.backend.clear_session()
+        except Exception:
+            pass
+
+        gc.collect()
+
+
+def get_tflite_interpreter():
+    global _tflite_interpreter
+    global _tflite_input_index
+    global _tflite_output_index
+
+    if _tflite_interpreter is None:
+        print("Loading TFLite model...")
+
+        _tflite_interpreter = tf.lite.Interpreter(
+            model_path=TFLITE_PATH,
+            num_threads=1
+        )
+        _tflite_interpreter.allocate_tensors()
+
+        input_details = _tflite_interpreter.get_input_details()
+        output_details = _tflite_interpreter.get_output_details()
+
+        _tflite_input_index = input_details[0]["index"]
+        _tflite_output_index = output_details[0]["index"]
+
+        print("TFLite model loaded successfully.")
+
+    return _tflite_interpreter
+
+
+def release_tflite_interpreter():
+    global _tflite_interpreter
+    global _tflite_input_index
+    global _tflite_output_index
+
+    if _tflite_interpreter is not None:
+        print("Releasing TFLite interpreter from memory...")
+
+    _tflite_interpreter = None
+    _tflite_input_index = None
+    _tflite_output_index = None
+    gc.collect()
 
 
 # =========================================================
@@ -453,9 +518,16 @@ def predict():
         # -------------------------------------------------
 
         # TensorFlow Lite inference
-        _tflite_interpreter.set_tensor(_tflite_input_index, model_input)
-        _tflite_interpreter.invoke()
-        fake_probability = float(_tflite_interpreter.get_tensor(_tflite_output_index)[0][0])
+        # Keep the large Keras model out of memory during image inference.
+        release_keras_model()
+
+        interpreter = get_tflite_interpreter()
+        interpreter.set_tensor(_tflite_input_index, model_input)
+        interpreter.invoke()
+
+        fake_probability = float(
+            interpreter.get_tensor(_tflite_output_index)[0][0]
+        )
 
 
         # -------------------------------------------------
@@ -583,15 +655,19 @@ def predict_gradcam():
         # -------------------------------------------------
         # PREDICTION
         # -------------------------------------------------
+        # Grad-CAM requires the Keras model.
+        release_tflite_interpreter()
+        keras_model = get_keras_model()
+
         fake_probability = float(
-            model.predict(model_input, verbose=0)[0][0]
+            keras_model.predict(model_input, verbose=0)[0][0]
         )
         prediction = "FAKE" if fake_probability >= FINAL_THRESHOLD else "REAL"
 
         # -------------------------------------------------
         # GRAD-CAM generation (full)
         # -------------------------------------------------
-        heatmap, _ = generate_gradcam(model, model_input)
+        heatmap, _ = generate_gradcam(keras_model, model_input)
         explanation = get_explanation(
             heatmap,
             fake_probability,
@@ -632,6 +708,10 @@ def predict_gradcam():
     except Exception as e:
         print("ERROR:", str(e))
         return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        # Release the large Keras model after Grad-CAM.
+        release_keras_model()
+        gc.collect()
 
 
 @app.route("/predict_video", methods=["POST"])
@@ -639,6 +719,11 @@ def predict_video():
     temp_video = None
 
     try:
+        # Video uses Keras. Release TFLite first so both models
+        # are not resident in memory together.
+        release_tflite_interpreter()
+        keras_model = get_keras_model()
+
         # -------------------------------------------------
         # CHECK VIDEO
         # -------------------------------------------------
@@ -769,7 +854,7 @@ def predict_video():
             )
 
             probability = float(
-                model.predict(
+                keras_model.predict(
                     model_input,
                     verbose=0
                 )[0][0]
@@ -855,13 +940,18 @@ def predict_video():
             )
         )
 
+        # Copy only the representative face, then release all
+        # sampled frame images before Grad-CAM.
         representative_face = frame_data[
             representative_index
-        ]["face_rgb"]
+        ]["face_rgb"].copy()
 
         representative_probability = frame_data[
             representative_index
         ]["probability"]
+
+        frame_data = None
+        gc.collect()
 
         # Generate Grad-CAM for the SAME representative frame.
         representative_input = np.expand_dims(
@@ -870,7 +960,7 @@ def predict_video():
         )
 
         representative_heatmap, _ = generate_gradcam(
-            model,
+            keras_model,
             representative_input
         )
 
@@ -993,11 +1083,16 @@ def predict_video():
         }), 500
 
     finally:
+        # Release the large Keras model after video processing.
+        release_keras_model()
+
         if temp_video and os.path.exists(temp_video):
             try:
                 os.remove(temp_video)
             except Exception:
                 pass
+
+        gc.collect()
 
 
 # =========================================================
