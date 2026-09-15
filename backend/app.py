@@ -76,7 +76,7 @@ YUNET_PATH = os.path.join(
 
 INPUT_SIZE = (260, 260)
 
-FINAL_THRESHOLD = 0.07  # increased threshold to reduce false positives
+FINAL_THRESHOLD = 0.65  # calibrated starting threshold
 
 YUNET_CONFIDENCE = 0.55
 
@@ -223,6 +223,17 @@ def home():
             "Why Fake Explanation"
         ]
 
+    })
+
+
+# =========================================================
+# HEALTH CHECK
+# =========================================================
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({
+        "status": "Backend running"
     })
 
 
@@ -520,107 +531,107 @@ def predict():
         }), 500
 
 
-    @app.route("/predict_gradcam", methods=["POST"])
-    def predict_gradcam():
+@app.route("/predict_gradcam", methods=["POST"])
+def predict_gradcam():
+    try:
+        # -------------------------------------------------
+        # CHECK UPLOADED IMAGE
+        # -------------------------------------------------
+        if "image" not in request.files:
+            return jsonify({"error": "No image uploaded"}), 400
+
+        file = request.files["image"]
+        image_bytes = file.read()
+
+        # -------------------------------------------------
+        # DECODE IMAGE
+        # -------------------------------------------------
+        image_array = np.frombuffer(image_bytes, np.uint8)
+        image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+        if image is None:
+            return jsonify({"error": "Invalid image"}), 400
+
+        # -------------------------------------------------
+        # IMAGE SIZE & YUNET FACE DETECTION
+        # -------------------------------------------------
+        h, w = image.shape[:2]
+        yunet.setInputSize((w, h))
+        _, faces = yunet.detect(image)
+        if faces is None or len(faces) == 0:
+            return jsonify({"error": "No face detected in the image"}), 400
+
+        # Select largest face
+        largest_face = max(faces, key=lambda face: face[2] * face[3])
+        x, y, fw, fh = map(int, largest_face[:4])
+
+        # Add margin
+        margin_x = int(fw * FACE_MARGIN)
+        margin_y = int(fh * FACE_MARGIN)
+        x1 = max(0, x - margin_x)
+        y1 = max(0, y - margin_y)
+        x2 = min(w, x + fw + margin_x)
+        y2 = min(h, y + fh + margin_y)
+
+        face_crop_bgr = image[y1:y2, x1:x2]
+        if face_crop_bgr.size == 0:
+            return jsonify({"error": "Could not crop detected face"}), 400
+        face_crop_bgr = cv2.resize(face_crop_bgr, INPUT_SIZE)
+        face_crop_rgb = cv2.cvtColor(face_crop_bgr, cv2.COLOR_BGR2RGB)
+
+        model_input = np.expand_dims(face_crop_rgb.astype(np.float32), axis=0)
+
+        # -------------------------------------------------
+        # PREDICTION
+        # -------------------------------------------------
+        fake_probability = float(
+            model.predict(model_input, verbose=0)[0][0]
+        )
+        prediction = "FAKE" if fake_probability >= FINAL_THRESHOLD else "REAL"
+
+        # -------------------------------------------------
+        # GRAD-CAM generation (full)
+        # -------------------------------------------------
+        heatmap, _ = generate_gradcam(model, model_input)
+        explanation = get_explanation(
+            heatmap,
+            fake_probability,
+            threshold=FINAL_THRESHOLD,
+        )
+        overlay = create_gradcam_overlay(face_crop_rgb, heatmap)
+
+        # -------------------------------------------------
+        # CONVERT IMAGES TO BASE64
+        # -------------------------------------------------
+        face_base64 = image_to_base64(face_crop_bgr)
+        heatmap_base64 = image_to_base64(overlay)
+
+        # -------------------------------------------------
+        # FINAL RESPONSE
+        # -------------------------------------------------
+        response = {
+            "success": True,
+            "prediction": prediction,
+            "fake_probability": round(fake_probability * 100, 2),
+            "threshold": FINAL_THRESHOLD,
+            "face_detected": True,
+            "face_box": {"x": x, "y": y, "width": fw, "height": fh},
+            "strongest_region": explanation["strongest_region"],
+            "strong_activation_percentage": explanation["strong_activation_percentage"],
+            "explanation": explanation["explanation"],
+            "face_image": face_base64,
+            "gradcam_image": heatmap_base64,
+        }
+        # Cleanup
         try:
-            # -------------------------------------------------
-            # CHECK UPLOADED IMAGE
-            # -------------------------------------------------
-            if "image" not in request.files:
-                return jsonify({"error": "No image uploaded"}), 400
+            del image, image_bytes, image_array, face_crop_bgr, face_crop_rgb, model_input, overlay, heatmap, explanation
+        except NameError:
+            pass
 
-            file = request.files["image"]
-            image_bytes = file.read()
-
-            # -------------------------------------------------
-            # DECODE IMAGE
-            # -------------------------------------------------
-            image_array = np.frombuffer(image_bytes, np.uint8)
-            image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
-            if image is None:
-                return jsonify({"error": "Invalid image"}), 400
-
-            # -------------------------------------------------
-            # IMAGE SIZE & YUNET FACE DETECTION
-            # -------------------------------------------------
-            h, w = image.shape[:2]
-            yunet.setInputSize((w, h))
-            _, faces = yunet.detect(image)
-            if faces is None or len(faces) == 0:
-                return jsonify({"error": "No face detected in the image"}), 400
-
-            # Select largest face
-            largest_face = max(faces, key=lambda face: face[2] * face[3])
-            x, y, fw, fh = map(int, largest_face[:4])
-
-            # Add margin
-            margin_x = int(fw * FACE_MARGIN)
-            margin_y = int(fh * FACE_MARGIN)
-            x1 = max(0, x - margin_x)
-            y1 = max(0, y - margin_y)
-            x2 = min(w, x + fw + margin_x)
-            y2 = min(h, y + fh + margin_y)
-
-            face_crop_bgr = image[y1:y2, x1:x2]
-            if face_crop_bgr.size == 0:
-                return jsonify({"error": "Could not crop detected face"}), 400
-            face_crop_bgr = cv2.resize(face_crop_bgr, INPUT_SIZE)
-            face_crop_rgb = cv2.cvtColor(face_crop_bgr, cv2.COLOR_BGR2RGB)
-
-            model_input = np.expand_dims(face_crop_rgb.astype(np.float32), axis=0)
-
-            # -------------------------------------------------
-            # PREDICTION
-            # -------------------------------------------------
-            fake_probability = float(
-                model.predict(model_input, verbose=0)[0][0]
-            )
-            prediction = "FAKE" if fake_probability >= FINAL_THRESHOLD else "REAL"
-
-            # -------------------------------------------------
-            # GRAD-CAM generation (full)
-            # -------------------------------------------------
-            heatmap, _ = generate_gradcam(model, model_input)
-            explanation = get_explanation(
-                heatmap,
-                fake_probability,
-                threshold=FINAL_THRESHOLD,
-            )
-            overlay = create_gradcam_overlay(face_crop_rgb, heatmap)
-
-            # -------------------------------------------------
-            # CONVERT IMAGES TO BASE64
-            # -------------------------------------------------
-            face_base64 = image_to_base64(face_crop_bgr)
-            heatmap_base64 = image_to_base64(overlay)
-
-            # -------------------------------------------------
-            # FINAL RESPONSE
-            # -------------------------------------------------
-            response = {
-                "success": True,
-                "prediction": prediction,
-                "fake_probability": round(fake_probability * 100, 2),
-                "threshold": FINAL_THRESHOLD,
-                "face_detected": True,
-                "face_box": {"x": x, "y": y, "width": fw, "height": fh},
-                "strongest_region": explanation["strongest_region"],
-                "strong_activation_percentage": explanation["strong_activation_percentage"],
-                "explanation": explanation["explanation"],
-                "face_image": face_base64,
-                "gradcam_image": heatmap_base64,
-            }
-            # Cleanup
-            try:
-                del image, image_bytes, image_array, face_crop_bgr, face_crop_rgb, model_input, overlay, heatmap, explanation
-            except NameError:
-                pass
-
-            gc.collect()
-            return jsonify(response)
-        except Exception as e:
-            print("ERROR:", str(e))
-            return jsonify({"success": False, "error": str(e)}), 500
+        gc.collect()
+        return jsonify(response)
+    except Exception as e:
+        print("ERROR:", str(e))
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 @app.route("/predict_video", methods=["POST"])
@@ -792,7 +803,12 @@ def predict_video():
         # -------------------------------------------------
         # Keep mean aggregation for a clean baseline comparison.
         # The next step will test improved temporal aggregation methods.
-        video_probability = float(np.mean(prob_array))
+        if len(prob_array) >= 5:
+            sorted_probs = np.sort(prob_array)
+            trim = max(1, int(len(sorted_probs) * 0.20))
+            video_probability = float(np.mean(sorted_probs[trim:-trim]))
+        else:
+            video_probability = float(np.mean(prob_array))
 
         prediction = (
             "FAKE"

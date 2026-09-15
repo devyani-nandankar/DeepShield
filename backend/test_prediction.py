@@ -1,17 +1,18 @@
 import requests
 
-image_path = input("Enter image path: ")
+video_path = input("Enter video path: ")
 
-url = "http://127.0.0.1:5000/predict"
+url = "http://127.0.0.1:5000/predict_video"
 
-with open(image_path, "rb") as image_file:
-
+with open(video_path, "rb") as video_file:
     response = requests.post(
         url,
         files={
-            "image": image_file
+            "video": video_file
         }
     )
+
+print("\nStatus Code:", response.status_code)
 
 print("\nResponse:")
 print(response.json())

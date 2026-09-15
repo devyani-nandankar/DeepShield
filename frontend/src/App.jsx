@@ -11,9 +11,14 @@ import AnalysisHistory, { saveAnalysisToHistory } from "./components/AnalysisHis
 import ForensicReport from "./components/ForensicReport";
 import MovingForensicBackground from "./components/MovingForensicBackground";
 import "./App.css";
-const API_URL = import.meta.env.VITE_API_URL;
+// DeepShield Flask backend
+// Use VITE_API_URL when provided; otherwise use the local Flask server.
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:5000"
+).replace(/\/$/, "");
+
 if (!API_URL) {
-  console.error("VITE_API_URL is not configured.");
+  console.error("DeepShield API URL is not configured.");
 }
 
 function App() {
@@ -46,12 +51,19 @@ function App() {
         setBackendOnline(false);
         return;
       }
-      fetch(`${API_URL}/`)
+      fetch(`${API_URL}/`, { method: "GET" })
         .then((res) => {
-          if (res.ok) setBackendOnline(true);
-          else setBackendOnline(false);
+          if (res.ok) {
+            setBackendOnline(true);
+          } else {
+            console.error("DeepShield backend check failed:", res.status);
+            setBackendOnline(false);
+          }
         })
-        .catch(() => setBackendOnline(false));
+        .catch((err) => {
+          console.error("DeepShield backend is unreachable:", err);
+          setBackendOnline(false);
+        });
     };
 
     checkBackend();
@@ -123,11 +135,11 @@ function App() {
     const formData = new FormData();
     let endpoint;
     if (mode === "image") {
-      // For image analysis, send the file under the "image" key as expected by Flask backend
+      // Flask backend: POST /predict, field name = "image"
       formData.append("image", file);
       endpoint = `${API_URL}/predict`;
     } else {
-      // Keep video analysis unchanged, using environment‑based URL
+      // Flask backend: POST /predict_video, field name = "video"
       formData.append("video", file);
       endpoint = `${API_URL}/predict_video`;
     }
@@ -152,7 +164,11 @@ function App() {
       }
 
       if (!response.ok) {
-        throw new Error(data.error || `API returned ${response.status}: ${responseText}`);
+        throw new Error(
+          data.error ||
+          `API returned ${response.status} for ${endpoint}. ` +
+          `Make sure the Flask backend is running at ${API_URL}.`
+        );
       }
 
       setBackendOnline(true);

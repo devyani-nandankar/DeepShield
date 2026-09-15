@@ -152,6 +152,52 @@ const ForensicTabs = ({ result, mode, fileName, onOpenReport }) => {
               )}
             </div>
 
+            {/* WHY DEEPSHIELD THINKS THIS (FEATURE 15) */}
+            <div className="why-panel-container">
+              <h3>WHY DEEPSHIELD THINKS THIS</h3>
+              <p className="why-subtitle">
+                System reasoning derived strictly from extracted neural features and gradient activations:
+              </p>
+              <div className="why-cards-grid">
+                <div className="why-evidence-card">
+                  <div className="we-icon">👤</div>
+                  <h4>FACE-BASED ANALYSIS</h4>
+                  <p>
+                    {result.face_detected !== false
+                      ? "YuNet detected and extracted the facial region, which was normalized to 260 × 260 for model classification."
+                      : "No clear facial boundary detected in the media input."}
+                  </p>
+                </div>
+
+                <div className="why-evidence-card">
+                  <div className="we-icon">🧠</div>
+                  <h4>MODEL PREDICTION</h4>
+                  <p>
+                    EfficientNetB2 computed a Fake Probability of <strong>{fakeProb}%</strong>, which {isFake ? "exceeds" : "remains below"} the {threshold}% decision threshold.
+                  </p>
+                </div>
+
+                <div className="why-evidence-card">
+                  <div className="we-icon">🎬</div>
+                  <h4>TEMPORAL EVIDENCE</h4>
+                  <p>
+                    {mode === "video"
+                      ? `${suspiciousCount} of ${frameProbs.length} sampled video frames exceeded the threshold, yielding a Temporal Suspicion Score of ${calculatedTemporalScore} / 100.`
+                      : "Spatial single-frame evaluation conducted on normalized facial crop."}
+                  </p>
+                </div>
+
+                <div className="why-evidence-card">
+                  <div className="we-icon">🔥</div>
+                  <h4>EXPLAINABILITY</h4>
+                  <p>
+                    {result.strongest_region
+                      ? `Grad-CAM indicates elevated neural activation focused on the ${result.strongest_region} region.`
+                      : "Grad-CAM visual heatmap demonstrates spatial distribution of model attention."}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -253,77 +299,6 @@ const ForensicTabs = ({ result, mode, fileName, onOpenReport }) => {
                 )}
               </div>
             )}
-          
-                        {/* WHY DEEPSHIELD THINKS THIS (FEATURE 15) */}
-            <div className="why-panel-container">
-              <h3>WHY DEEPSHIELD THINKS THIS</h3>
-              <p className="why-subtitle">
-                See the visual evidence and AI information that influenced this decision.
-              </p>
-              <div className="why-cards-grid">
-                <div className="why-evidence-card">
-                  <div className="we-icon">👤</div>
-                  <h4>FACE-BASED ANALYSIS</h4>
-                  <p>
-                    {result.face_detected !== false
-                      ? "YuNet detected and extracted the facial region, which was normalized to 260 × 260 for model classification."
-                      : "No clear facial boundary detected in the media input."}
-                  </p>
-                </div>
-
-                <div className="why-evidence-card">
-                  <div className="we-icon">🧠</div>
-                  <h4>MODEL PREDICTION</h4>
-                  <p>
-                    The AI estimated a <strong>{fakeProb}%</strong> probability that
-                    this {mode === "video" ? "video" : "image"} is fake.
-                    The result is classified as <strong>{isFake ? "FAKE" : "REAL"}</strong>
-                    because the score {isFake ? "is at or above" : "is below"} the
-                    <strong> {threshold}%</strong> decision threshold.
-                  </p>
-                </div>
-
-                <div className="why-evidence-card">
-                  <div className="we-icon">🎬</div>
-                  <h4>TEMPORAL EVIDENCE</h4>
-                  <p>
-                    {mode === "video"
-                      ? `${suspiciousCount} of ${frameProbs.length} sampled video frames exceeded the threshold, yielding a Temporal Suspicion Score of ${calculatedTemporalScore} / 100.`
-                      : "Spatial single-frame evaluation conducted on normalized facial crop."}
-                  </p>
-                </div>
-
-                <div className="why-evidence-card">
-                  <div className="we-icon">🔥</div>
-                  <h4>EXPLAINABILITY</h4>
-                  <p>
-                    {result.strongest_region
-                      ? `The AI focused most strongly on the ${result.strongest_region} region when making this prediction.`
-                      : "The heatmap shows the facial areas that received the strongest attention from the AI model."}
-                  </p>
-                </div>
-              </div>
-
-              <div
-                className="explainability-note"
-                style={{
-                  marginTop: "16px",
-                  padding: "14px 18px",
-                  borderRadius: "12px",
-                  background: "var(--feature-card-bg)",
-                  border: "1px solid var(--border-color)",
-                  color: "var(--text-secondary)",
-                  fontSize: "12px",
-                  lineHeight: "1.6",
-                }}
-              >
-                ⚠️ <strong>Important:</strong> The highlighted areas show where
-                the AI model focused when making its prediction. They are
-                supporting evidence, not proof that the image or video has
-                been manipulated.
-              </div>
-            </div>
-
           </div>
         )}
       </TiltCard>
